@@ -1,0 +1,8 @@
+## ignore files ##
+
+*.smi
+*.ass
+*.vtt
+
+todo/
+node_modules/
