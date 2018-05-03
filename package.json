@@ -17,6 +17,10 @@
     "subtitle",
     "convert"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Paosder/subtitle-convert.git"
+  },
   "author": "paosder",
   "license": "MIT",
   "devDependencies": {
