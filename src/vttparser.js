@@ -30,7 +30,15 @@ const vttParser = (encoded) => {
         const cue = Cue();
         let cueTime = null;
         [, cueTime, cue.text] = data;
-        [cue.start, cue.end] = cueTime.split(' --> ');
+        cueTime.split(' --> ').forEach((e) => {
+          const time = e.split(':');
+          const [sec, milli] = time.pop().split('.');
+          if (cue.start === 0) {
+            cue.start = new Date(Date.UTC(2018, 4, 3, ...time, sec, milli));
+          } else {
+            cue.end = new Date(Date.UTC(2018, 4, 3, ...time, sec, milli));
+          }
+        });
         cueList.push(cue);
       }
     }
