@@ -1,45 +1,45 @@
-import fs from 'fs';
 import { SubtitleWriter } from './basestyle';
 
 class VTTWriter extends SubtitleWriter {
   write(target) {
-    const fp = fs.createWriteStream(`${target}.${this.type}`, {
-      flags: 'w',
-    });
-    fp.write('WEBVTT\r\n\r\n');
-    fp.write('NOTE\r\nSTYLE_START\r\n');
-    fp.write('/* For not-supported browser only.\r\n');
-    fp.write(' Paste this part to head style using xhr. */\r\n');
+    let buf = '';
+    buf += 'WEBVTT\r\n\r\n';
+    buf += 'NOTE\r\nSTYLE_START\r\n';
+    buf += '/* For not-supported browser only.\r\n';
+    buf += ' Paste this part to head style using xhr. */\r\n';
     this.styleList.forEach((el, i) => {
-      fp.write(`video::cue(.style${i}) {\r\n`);
-      fp.write(`\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`);
+      buf += `video::cue(.style${i}) {\r\n`;
+      buf += `\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`;
       if (el.face) {
-        fp.write(`\tfont-family: ${el.face};\r\n`);
+        buf += `\tfont-family: ${el.face};\r\n`;
       }
-      fp.write('}\r\n');
+      buf += '}\r\n';
     });
-    fp.write('/* End of inner css. */\r\nSTYLE_END\r\n\r\n');
+    buf += '/* End of inner css. */\r\nSTYLE_END\r\n\r\n';
     this.commentList.forEach((el) => {
-      fp.write('NOTE\r\n');
-      fp.write(`${el}\r\n\r\n`);
+      buf += 'NOTE\r\n';
+      buf += `${el}\r\n\r\n`;
     });
     this.styleList.forEach((el, i) => {
-      fp.write('STYLE\r\n');
-      fp.write(`::cue(.style${i}) {\r\n`);
-      fp.write(`\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`);
+      buf += 'STYLE\r\n';
+      buf += `::cue(.style${i}) {\r\n`;
+      buf += `\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`;
       if (el.face) {
-        fp.write(`\tfont-family: ${el.face};\r\n`);
+        buf += `\tfont-family: ${el.face};\r\n`;
       }
-      fp.write('}\r\n\r\n');
+      buf += '}\r\n\r\n';
     });
     this.cueList.forEach((el, i) => {
-      fp.write(`${i}\r\n`);
-      fp.write(`${el.start} --> ${el.end}\r\n`);
-      fp.write(`${el.text}\r\n`);
-      fp.write('\r\n');
+      buf += `${i}\r\n`;
+      buf += `${el.start.toISOString().slice(11, -1)} ` +
+        `--> ${el.end.toISOString().slice(11, -1)}\r\n`;
+      buf += `${el.text}\r\n`;
+      buf += '\r\n';
     });
-    fp.end();
-    return true;
+    if (this.writeFile(target, buf)) {
+      return true;
+    }
+    return buf;
   }
 }
 

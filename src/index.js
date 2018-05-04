@@ -3,34 +3,54 @@ import fs from 'fs';
 import { Iconv } from 'iconv';
 import path from 'path';
 import DetectEncoding from 'detect-character-encoding';
+import kNode from 'detect-node';
 import VTTWriter from './vttwriter';
 import smiParser from './smiparser';
 import vttParser from './vttparser';
 
 class SubtitleConverter {
-  constructor(filename, target, encode) {
-    const raw = fs.readFileSync(filename);
-    const autoencode = DetectEncoding(raw);
-    let enc = null;
-    if (arguments.length === 1) {
-      enc = autoencode.encoding;
-    } else if (arguments.length === 2) {
-      enc = autoencode.encoding;
-    } else if (autoencode.encoding !== encode.toUpperCase()) {
-      console.log(`[Warning] Expected encoding : ${autoencode.encoding} / Input : ${encode}`);
+  constructor(...args) {
+    this.loaded = false;
+    if (arguments.length > 0) {
+      this.load(...args);
     }
-    if (!enc) {
-      enc = encode;
+  }
+  load(filename, ext, encode, targetencode = 'UTF-8') {
+    try {
+      if (kNode) {
+        const raw = fs.readFileSync(filename);
+        const autoencode = DetectEncoding(raw);
+        let enc = null;
+        if (arguments.length <= 2) {
+          enc = autoencode.encoding;
+        } else if (autoencode.encoding !== encode.toUpperCase()) {
+          console.log(`[Warning] Expected encoding : ${autoencode.encoding} / Input : ${encode}`);
+        }
+        if (!enc) {
+          enc = encode;
+        }
+        const iconv = new Iconv(enc, targetencode);
+        const convraw = iconv.convert(raw);
+        this.encoded = new TextDecoder(targetencode).decode(convraw);
+        this.originext = ext || path.extname(filename).toUpperCase();
+      } else {
+        this.encoded = filename;
+        this.originext = ext;
+      }
+      this.originext = this.originext.toUpperCase();
+      this.targetencode = targetencode;
+      this.parsed = false;
+      this.loaded = true;
+      return true;
+    } catch (e) {
+      return false;
     }
-    const iconv = new Iconv(enc, 'UTF-8');
-    const convraw = iconv.convert(raw);
-    this.encoded = new TextDecoder('UTF-8').decode(convraw);
-    this.target = target;
-    this.origin = path.extname(filename).toUpperCase();
-    this.parsed = false;
   }
   parse() {
-    switch (this.origin) {
+    if (!this.loaded) {
+      return false;
+    }
+    switch (this.originext) {
       case '.SMI':
         this.parsed = smiParser(this.encoded);
         break;
@@ -42,26 +62,94 @@ class SubtitleConverter {
     }
     return true;
   }
-  convert(type) {
+  convert(type, target) {
     let res = false;
-    if (!this.parsed) {
-      this.parse();
+    if (!this.parsed && !this.parse()) {
+      console.log(`
+        Parse failed! you may forgot to load before covert or
+        there is no method to parse : ${this.originext}.
+      `);
+      return false;
     }
-    if (type.toUpperCase() === 'VTT') {
+    if (type === undefined) {
+      console.log(`
+        There is no type to convert : ${type}. Please check arguments.
+      `);
+      return false;
+    }
+    const upperType = type.toUpperCase();
+    if (upperType === '.VTT') {
       res = new VTTWriter(
         this.parsed,
         type,
-      ).write(this.target);
+        this.targetencode,
+      ).write(target);
     } else {
+      console.log(`
+        There are no such types to convert : ${upperType}
+      `);
       return res;
     }
     return res;
   }
+  delay(time, index, resize) {
+    if (!this.parsed) {
+      console.log(`
+        You must parse data before using this method.
+      `);
+      return false;
+    }
+    let [sec, milli] = time.toString(10).split('.');
+    if (milli !== undefined) {
+      milli = parseInt(milli, 10);
+      if (milli < 10) {
+        milli *= 100;
+      } else if (milli < 100) {
+        milli *= 10;
+      }
+      if (sec.match('-')) {
+        milli *= -1;
+      }
+    }
+    sec = parseInt(sec, 10);
+    if (index === undefined) {
+      this.parsed.cueList.forEach((el) => {
+        resize !== undefined || el.start
+          .setUTCSeconds(el.start.getUTCSeconds() + sec);
+        el.end.setSeconds(el.end.getUTCSeconds() + sec);
+        if (milli !== undefined) {
+          resize !== undefined || el.start
+            .setUTCMilliseconds(el.start.getUTCMilliseconds() + milli);
+          el.end.setUTCMilliseconds(el.end.getUTCMilliseconds() + milli);
+        }
+      });
+    } else if (index < this.parsed.cueList.length) {
+      resize !== undefined || this.parsed
+        .cueList[index]
+        .start
+        .setUTCSeconds(this.parsed.cueList[index].start.getUTCSeconds() + sec);
+      this.parsed
+        .cueList[index]
+        .end
+        .setUTCSeconds(this.parsed.cueList[index].end.getUTCSeconds() + sec);
+      if (milli !== undefined) {
+        resize === undefined || this.parsed
+          .cueList[index]
+          .start
+          .setUTCMilliseconds(this.parsed.cueList[index].start.getUTCMilliseconds() + milli);
+        this.parsed
+          .cueList[index]
+          .end
+          .setUTCMilliseconds(this.parsed.cueList[index].end.getUTCMilliseconds() + milli);
+      }
+    } else {
+      return false;
+    }
+    return true;
+  }
+  resize(time, index) {
+    this.delay(time, index, true);
+  }
 }
-/*
-const a = new SubtitleConverter('./test/test.vtt', './test/test');
-a.parse();
-a.convert('vtt');
-*/
 
 export default SubtitleConverter;

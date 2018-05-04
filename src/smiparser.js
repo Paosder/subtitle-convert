@@ -13,12 +13,11 @@ const smiParser = (encoded) => {
   parser = new Parser({
     onopentag: (name, attr) => {
       if (name === 'sync') {
-        const start = new Date(parseInt(attr.start, 10)).toISOString().slice(11, -1);
+        const start = new Date(parseInt(attr.start, 10));
         if (cue) {
-          cue.end = start;
+          cue.end = new Date(parseInt(attr.start, 10));
           if (cue.text.trim() !== '') {
             cueList.push(cue);
-            // console.log(cue.text, cue.start, cue.end);
           }
         }
         cue = Cue();
@@ -33,7 +32,6 @@ const smiParser = (encoded) => {
         _.forEach(attr, (value, key) => {
           style[key] = value;
         });
-        // console.log(style);
         styleNum = _.findIndex(
           styleList,
           _.matches({ color: style.color, face: style.face }),
@@ -44,7 +42,6 @@ const smiParser = (encoded) => {
         }
         cue.text += `<c.style${styleNum}>`;
       } else if (!name.match(/sami|p|body|head|title|style/)) {
-        // console.log(name);
         cue.text += `<${name}>`;
       }
     },
@@ -54,7 +51,6 @@ const smiParser = (encoded) => {
       }
     },
     onclosetag: (tagname) => {
-      // console.log(tagname);
       if (tagname === 'font') {
         cue.text += '</c>';
       } else if (!tagname.match(/sami|p|body|head|title|style|br|sync/)) {
@@ -66,9 +62,9 @@ const smiParser = (encoded) => {
   parser.end();
   const regex = new RegExp(
     '<!--[\\s\\S]*?(?:-->)?'
-    + '<!---+>?' // A comment with no body
+    + '<!---+>?'
     + '|<!(?![dD][oO][cC][tT][yY][pP][eE]|\\[CDATA\\[)[^>]*>?'
-    + '|<[?][^>]*>?', // A pseudo-comment
+    + '|<[?][^>]*>?',
     'g',
   );
   encoded.match(regex).forEach((el) => {

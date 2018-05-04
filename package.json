@@ -1,6 +1,6 @@
 {
   "name": "subtitle-convert",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Subtitle converter from traditional subtitle extention.",
   "main": "./lib/",
   "scripts": {
@@ -28,6 +28,7 @@
     "babel-core": "^6.26.3",
     "babel-plugin-transform-es2015-unicode-regex": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "colors": "^1.2.3",
     "eslint": "^4.19.1",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.11.0",
@@ -36,6 +37,7 @@
   },
   "dependencies": {
     "detect-character-encoding": "^0.5.1",
+    "detect-node": "^2.0.3",
     "htmlparser2": "^3.9.2",
     "iconv": "^2.3.0",
     "lodash": "^4.17.10",
