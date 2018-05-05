@@ -65,4 +65,13 @@ console.log('PASS'.cyan);
 console.log('expect : ' + 'true'.yellow);
 invariant(testVTT.convert('.vtt'), 'parse vtt : Convert to VTT failed');
 console.log('PASS'.cyan);
+console.log(`--------------------
+  Stringify && Parse Test
+--------------------`.green);
+console.log('expect : ' + 'true'.yellow);
+const objectStringify = testVTT.stringify();
+invariant(testVTT.parse(objectStringify), 'stringify : Parse failed');
+console.log('PASS'.cyan);
+
+
 console.log('Test Completed!'.cyan);
