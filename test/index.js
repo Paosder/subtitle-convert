@@ -50,7 +50,7 @@ console.log('expect : ' + 'true'.yellow);
 invariant(inittest3.parse(), 'init test3 : Parse SMI failed');
 console.log('PASS'.cyan);
 console.log('expect : ' + 'true'.yellow);
-invariant(inittest3.convert('.vtt', 'test.vtt'), 'init test3 : Convert to VTT failed');
+invariant(inittest3.convert('.vtt', path.join(__dirname, 'test.vtt')), 'init test3 : Convert to VTT failed');
 console.log('PASS'.cyan);
 console.log(`--------------------
   VTT Parse Test
