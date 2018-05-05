@@ -192,14 +192,20 @@ class SubtitleConverter {
   }
   apply(cueList) {
     if (typeof cueList === 'object') {
-      const arr = cueList;
-      this.parsed.cueList.forEach((el, i) => {
-        arr[i].endTime = (el.end.getUTCMinutes() * 60)
-          + el.end.getUTCSeconds() + (el.end.getUTCMilliseconds() * 0.01);
-        arr[i].startTime = (el.start.getUTCMinutes() * 60)
-          + el.start.getUTCSeconds() + (el.start.getUTCMilliseconds() * 0.01);
-        arr[i].text = el.text;
-      });
+      /* https://developer.mozilla.org/en-US/docs/Web/API/TextTrack,
+        cues are read-only but it can modify like tricky method below.
+        This is temporary modification method so we should write other codes
+        to modify.
+      */
+      for (let i = 0; i < cueList.length; i += 1) {
+        const arr = cueList[i];
+        const el = this.parsed.cueList[parseInt(arr.id, 10)];
+        arr.endTime = (el.end.getUTCMinutes() * 60)
+          + el.end.getUTCSeconds() + (el.end.getUTCMilliseconds() * 0.001);
+        arr.startTime = (el.start.getUTCMinutes() * 60)
+          + el.start.getUTCSeconds() + (el.start.getUTCMilliseconds() * 0.001);
+        arr.text = el.text;
+      }
       return true;
     }
     return false;
