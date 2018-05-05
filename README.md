@@ -1,5 +1,6 @@
 # subtitle-convert 
 
+[![npm version](https://badge.fury.io/js/subtitle-convert.svg)](https://badge.fury.io/js/subtitle-convert)
 [![Build Status](https://travis-ci.org/Paosder/subtitle-convert.svg?branch=master)](https://travis-ci.org/Paosder/subtitle-convert)
 
 Subtitle converter from traditional subtitles.  
