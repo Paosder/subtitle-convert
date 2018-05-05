@@ -1,4 +1,7 @@
-# subtitle-convert
+# subtitle-convert 
+
+[![Build Status](https://travis-ci.org/Paosder/subtitle-convert.svg?branch=master)](https://travis-ci.org/Paosder/subtitle-convert)
+
 Subtitle converter from traditional subtitles.  
 It automatically detects file encoding and easily convert to other file encoding with different subtitle type.  
 eg.) SMI(EUC-KR) -> WEBVTT(UTF-8)  
