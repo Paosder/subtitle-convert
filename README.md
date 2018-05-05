@@ -67,6 +67,9 @@ const result = smi2vtt.convert('.vtt');
 // instead of filepath.
 const smi2vtt = new Converter(textofSubtitle);
 
+// You may push TextTrackCueList array to converter to modify track cue list.
+smi2vtt.apply(cueList); // cueList overwritten to converter's cue list.
+
 // You may skip to call parse method if you need only just conversion.
 const result = smi2vtt.convert('.vtt');
 ```

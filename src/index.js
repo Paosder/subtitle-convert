@@ -56,20 +56,24 @@ class SubtitleConverter {
   }
   parse(object) {
     if (object !== undefined) {
-      try {
-        const that = JSON.parse(object);
-        this.originext = that.originext;
-        this.targetencode = that.targetencode;
-        this.parsed = that.parsed;
-        this.loaded = that.loaded;
-        this.parsed.cueList = this.parsed.cueList.map((el) => {
-          const newel = Object.assign({}, el);
-          newel.start = new Date(el.start);
-          newel.end = new Date(el.end);
-          return newel;
-        });
-        return true;
-      } catch (e) {
+      if (typeof object === 'string') {
+        try {
+          const that = JSON.parse(object);
+          this.originext = that.originext;
+          this.targetencode = that.targetencode;
+          this.parsed = that.parsed;
+          this.loaded = that.loaded;
+          this.parsed.cueList = this.parsed.cueList.map((el) => {
+            const newel = Object.assign({}, el);
+            newel.start = new Date(el.start);
+            newel.end = new Date(el.end);
+            return newel;
+          });
+          return true;
+        } catch (e) {
+          return false;
+        }
+      } else {
         return false;
       }
     }
@@ -185,6 +189,20 @@ class SubtitleConverter {
       parsed: this.parsed,
     };
     return JSON.stringify(that);
+  }
+  apply(cueList) {
+    if (typeof cueList === 'object') {
+      const arr = cueList;
+      this.parsed.cueList.forEach((el, i) => {
+        arr[i].endTime = (el.end.getUTCMinutes() * 60)
+          + el.end.getUTCSeconds() + (el.end.getUTCMilliseconds() * 0.01);
+        arr[i].startTime = (el.start.getUTCMinutes() * 60)
+          + el.start.getUTCSeconds() + (el.start.getUTCMilliseconds() * 0.01);
+        arr[i].text = el.text;
+      });
+      return true;
+    }
+    return false;
   }
 }
 
