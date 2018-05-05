@@ -1,4 +1,4 @@
 {
   "presets": ["env"],
-  "plugins": ["transform-es2015-unicode-regex"]
+  "plugins": ["transform-es2015-unicode-regex", "syntax-dynamic-import"]
 }
