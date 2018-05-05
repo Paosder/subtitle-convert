@@ -1,12 +1,19 @@
 import { TextDecoder } from 'text-encoding';
-import fs from 'fs';
-import { Iconv } from 'iconv';
-import path from 'path';
-import DetectEncoding from 'detect-character-encoding';
-import kNode from 'detect-node';
 import VTTWriter from './vttwriter';
 import smiParser from './smiparser';
 import vttParser from './vttparser';
+
+let Iconv = null;
+let path = null;
+let fs = null;
+let DetectEncoding = null;
+
+if (!process.browser) {
+  Iconv = require('iconv').Iconv; // eslint-disable-line
+  path = require('path'); // eslint-disable-line global-require
+  fs = require('fs'); // eslint-disable-line global-require
+  DetectEncoding = require('detect-character-encoding'); // eslint-disable-line global-require
+}
 
 class SubtitleConverter {
   constructor(...args) {
@@ -17,7 +24,7 @@ class SubtitleConverter {
   }
   load(filename, ext, encode, targetencode = 'UTF-8') {
     try {
-      if (kNode) {
+      if (!process.browser) {
         const raw = fs.readFileSync(filename);
         const autoencode = DetectEncoding(raw);
         let enc = null;
@@ -43,6 +50,7 @@ class SubtitleConverter {
       this.loaded = true;
       return true;
     } catch (e) {
+      console.log(e);
       return false;
     }
   }
@@ -101,6 +109,7 @@ class SubtitleConverter {
         this.parsed,
         type,
         this.targetencode,
+        fs,
       ).write(target);
     } else {
       console.log(`
