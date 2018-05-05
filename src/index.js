@@ -46,7 +46,25 @@ class SubtitleConverter {
       return false;
     }
   }
-  parse() {
+  parse(object) {
+    if (object !== undefined) {
+      try {
+        const that = JSON.parse(object);
+        this.originext = that.originext;
+        this.targetencode = that.targetencode;
+        this.parsed = that.parsed;
+        this.loaded = that.loaded;
+        this.parsed.cueList = this.parsed.cueList.map((el) => {
+          const newel = Object.assign({}, el);
+          newel.start = new Date(el.start);
+          newel.end = new Date(el.end);
+          return newel;
+        });
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
     if (!this.loaded) {
       return false;
     }
@@ -149,6 +167,15 @@ class SubtitleConverter {
   }
   resize(time, index) {
     this.delay(time, index, true);
+  }
+  stringify() {
+    const that = {
+      originext: this.originext,
+      targetencode: this.targetencode,
+      loaded: this.loaded,
+      parsed: this.parsed,
+    };
+    return JSON.stringify(that);
   }
 }
 
