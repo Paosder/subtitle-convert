@@ -1,3 +1,4 @@
+/* eslint-disable */
 const invariant = require('invariant');
 const path = require('path');
 const colors = require('colors');
@@ -39,6 +40,8 @@ console.log('PASS'.cyan);
 console.log('expect : ' + 'true'.yellow);
 invariant(inittest2.convert('.vtt'), 'init test2 : Convert to VTT failed.');
 console.log('PASS'.cyan);
+
+// init test 3
 console.log(`--------------------
   INIT TEST 3 - with SAMI(.smi)
 --------------------`.green);
@@ -52,11 +55,13 @@ console.log('PASS'.cyan);
 console.log('expect : ' + 'true'.yellow);
 invariant(inittest3.convert('.vtt', path.join(__dirname, 'test.vtt')), 'init test3 : Convert to VTT failed');
 console.log('PASS'.cyan);
+
+// vtt parse test
 console.log(`--------------------
   VTT Parse Test
 --------------------`.green);
 const testVTT = new SC(
-  path.join(__dirname, 'test.vtt'),
+  path.join(__dirname, 'test.vatt'),
   '.vtt',
 );
 console.log('expect : ' + 'true'.yellow);
@@ -65,6 +70,8 @@ console.log('PASS'.cyan);
 console.log('expect : ' + 'true'.yellow);
 invariant(testVTT.convert('.vtt'), 'parse vtt : Convert to VTT failed');
 console.log('PASS'.cyan);
+
+// stringify && parse test
 console.log(`--------------------
   Stringify && Parse Test
 --------------------`.green);
@@ -73,5 +80,27 @@ const objectStringify = testVTT.stringify();
 invariant(testVTT.parse(objectStringify), 'stringify : Parse failed');
 console.log('PASS'.cyan);
 
+// delay && resize test
+console.log(`--------------------
+  Delay && Resize Test
+--------------------`.green);
+console.log('expect : ' + 'true'.yellow);
+invariant(testVTT.delay(10), 'delay : failed');
+console.log('PASS'.cyan);
+console.log('expect : ' + 'true'.yellow);
+invariant(testVTT.delay(10, 0), 'delay-index : failed');
+console.log('PASS'.cyan);
+console.log('expect : ' + 'true'.yellow);
+invariant(testVTT.delay(10, 3, -1), 'delay-to-end : failed');
+console.log('PASS'.cyan);
+console.log('expect : ' + 'true'.yellow);
+invariant(testVTT.resize(10), 'resize : failed');
+console.log('PASS'.cyan);
+console.log('expect : ' + 'true'.yellow);
+invariant(testVTT.resize(10, 0), 'resize-index : failed');
+console.log('PASS'.cyan);
+console.log('expect : ' + 'true'.yellow);
+invariant(testVTT.resize(10, 3, -1), 'resize-to-end : failed');
+console.log('PASS'.cyan);
 
 console.log('Test Completed!'.cyan);
