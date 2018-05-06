@@ -3,6 +3,9 @@ import VTTWriter from './vttwriter';
 import smiParser from './smiparser';
 import vttParser from './vttparser';
 
+process.env.NODE_ENV = (process.env.NODE_ENV && (process.env.NODE_ENV)
+  .trim().toLowerCase() === 'production') ? 'production' : 'development';
+
 let Iconv = null;
 let path = null;
 let fs = null;
@@ -123,7 +126,7 @@ class SubtitleConverter {
     }
     return res;
   }
-  delay(time, index, resize) {
+  delay(time, index, end, resize) {
     if (!this.parsed) {
       console.log(`
         You must parse data before using this method.
@@ -143,43 +146,46 @@ class SubtitleConverter {
       }
     }
     sec = parseInt(sec, 10);
-    if (index === undefined) {
-      this.parsed.cueList.forEach((el) => {
-        resize !== undefined || el.start
-          .setUTCSeconds(el.start.getUTCSeconds() + sec);
-        el.end.setSeconds(el.end.getUTCSeconds() + sec);
-        if (milli !== undefined) {
-          resize !== undefined || el.start
-            .setUTCMilliseconds(el.start.getUTCMilliseconds() + milli);
-          el.end.setUTCMilliseconds(el.end.getUTCMilliseconds() + milli);
+    const cueIndex = index || 0;
+    let cueIndexEnd = index || this.parsed.cueList.length - 1;
+    if (cueIndex < this.parsed.cueList.length) {
+      if (index && typeof end === 'number') {
+        if (end >= 0) {
+          cueIndexEnd = end;
+        } else {
+          cueIndexEnd = this.parsed.cueList.length - 1;
         }
-      });
-    } else if (index < this.parsed.cueList.length) {
-      resize !== undefined || this.parsed
-        .cueList[index]
-        .start
-        .setUTCSeconds(this.parsed.cueList[index].start.getUTCSeconds() + sec);
-      this.parsed
-        .cueList[index]
-        .end
-        .setUTCSeconds(this.parsed.cueList[index].end.getUTCSeconds() + sec);
-      if (milli !== undefined) {
-        resize === undefined || this.parsed
-          .cueList[index]
-          .start
-          .setUTCMilliseconds(this.parsed.cueList[index].start.getUTCMilliseconds() + milli);
-        this.parsed
-          .cueList[index]
-          .end
-          .setUTCMilliseconds(this.parsed.cueList[index].end.getUTCMilliseconds() + milli);
+      }
+      if (cueIndexEnd < this.parsed.cueList.length) {
+        for (let i = cueIndex; i <= cueIndexEnd; i += 1) {
+          resize !== undefined || this.parsed
+            .cueList[i]
+            .start
+            .setUTCSeconds(this.parsed.cueList[i].start.getUTCSeconds() + sec);
+          this.parsed
+            .cueList[i]
+            .end
+            .setUTCSeconds(this.parsed.cueList[i].end.getUTCSeconds() + sec);
+          if (milli !== undefined) {
+            resize === undefined || this.parsed
+              .cueList[i]
+              .start
+              .setUTCMilliseconds(this.parsed.cueList[i].start.getUTCMilliseconds() + milli);
+            this.parsed
+              .cueList[i]
+              .end
+              .setUTCMilliseconds(this.parsed.cueList[i].end.getUTCMilliseconds() + milli);
+          }
+        }
+        return true;
       }
     } else {
       return false;
     }
     return true;
   }
-  resize(time, index) {
-    this.delay(time, index, true);
+  resize(time, index, end) {
+    return this.delay(time, index, end, true);
   }
   stringify() {
     const that = {

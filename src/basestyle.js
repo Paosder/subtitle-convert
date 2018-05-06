@@ -19,7 +19,7 @@ export class SubtitleWriter {
     this.fs = fs;
   }
   writeFile(target, buf) {
-    if (target !== undefined) {
+    if (typeof target === 'string') {
       if (!process.browser) {
         const fp = this.fs.createWriteStream(target, {
           flags: 'w',
