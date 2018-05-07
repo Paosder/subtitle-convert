@@ -46,12 +46,24 @@ smi2vtt.parse();
 // You may add delay(seconds) to each cue separately.
 smi2vtt.delay(delayTime, cueIndex);
 
+// You can set range of delay like below -
+smi2vtt.delay(delayTime, cueIndex, cueIndexEnd);
+
+// If you set cueIndexEnd to -1, converter automatically interpretes to last index of cue list.
+smi2vtt.delay(delayTime, cueIndex, -1);
+
 // Or add delay to entire cueList.
 smi2vtt.delay(delayTime);
 
 // These two statements are equivalent :
 smi2vtt.delay(-12.3); // 12.3 seconds faster.
 smi2vtt.delay('-12.3'); // 12.3 seconds faster too.
+
+// You may resize instead of delay. It just resizes endTime of cue. Usage of .resize is very similar to .delay.
+// Actually, .resize(...args) is equivalent to .delay(...args, true).
+smi2vtt.resize(delayTime); // equivalent to .delay(delayTime, null, null, true).
+smi2vtt.resize(delayTime, cueIndex); // equivalent to .delay(delayTime, cueIndex, null, true).
+smi2vtt.resize(delayTime, cueIndex, cueIndexEnd); // equivalent to .delay(delayTime, cueIndex, cueIndexEnd, true).
 
 /* Convert parsed data to chosen type.
  Then parser will create an new file in destination with specific encoding.
