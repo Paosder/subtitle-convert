@@ -3,7 +3,7 @@ import VTTWriter from './vttwriter';
 import smiParser from './smiparser';
 import vttParser from './vttparser';
 
-process.env.NODE_ENV = (process.env.NODE_ENV && (process.env.NODE_ENV)
+const kEnvironment = (process.env.NODE_ENV && (process.env.NODE_ENV)
   .trim().toLowerCase() === 'production') ? 'production' : 'development';
 
 let Iconv = null;

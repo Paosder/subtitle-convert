@@ -3,7 +3,7 @@
 *.smi
 *.ass
 *.vtt
-*.DS_Store
+.DS_Store
 
 todo/
 node_modules/
