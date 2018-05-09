@@ -1,7 +1,6 @@
 import { TextDecoder } from 'text-encoding';
-import VTTWriter from './vttwriter';
-import smiParser from './smiparser';
-import vttParser from './vttparser';
+import Writer from './writer';
+import Parser from './parser';
 
 const kEnvironment = (process.env.NODE_ENV && (process.env.NODE_ENV)
   .trim().toLowerCase() === 'production') ? 'production' : 'development';
@@ -85,10 +84,10 @@ class SubtitleConverter {
     }
     switch (this.originext) {
       case '.SMI':
-        this.parsed = smiParser(this.encoded);
+        this.parsed = Parser.SMIParser(this.encoded);
         break;
       case '.VTT':
-        this.parsed = vttParser(this.encoded);
+        this.parsed = Parser.VTTParser(this.encoded);
         break;
       default:
         return false;
@@ -112,7 +111,7 @@ class SubtitleConverter {
     }
     const upperType = type.toUpperCase();
     if (upperType === '.VTT') {
-      res = new VTTWriter(
+      res = new Writer.VTTWriter(
         this.parsed,
         type,
         this.targetencode,

@@ -1,4 +1,4 @@
-import { Cue, textStyle } from './basestyle';
+import { Cue, textStyle } from '../basestyle';
 
 const vttParser = (encoded) => {
   // const d = /(?:NOTE[\r\n]){1}(?:[^\u000A\u000D]+[\n\r]{0,1})*/g;

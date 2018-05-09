@@ -1,4 +1,4 @@
-import { SubtitleWriter } from './basestyle';
+import { SubtitleWriter } from '../basestyle';
 
 class VTTWriter extends SubtitleWriter {
   write(target) {
