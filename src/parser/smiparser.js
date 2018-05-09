@@ -1,6 +1,6 @@
 import { Parser } from 'htmlparser2';
 import _ from 'lodash';
-import { Cue, textStyle } from './basestyle';
+import { Cue, textStyle } from '../basestyle';
 
 const smiParser = (encoded) => {
   let parser = null;
