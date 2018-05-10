@@ -9,7 +9,9 @@ class VTTWriter extends SubtitleWriter {
     buf += ' Paste this part to head style using xhr. */\r\n';
     this.styleList.forEach((el, i) => {
       buf += `video::cue(.style${i}) {\r\n`;
-      buf += `\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`;
+      if (el.color) {
+        buf += `\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`;
+      }
       if (el.face) {
         buf += `\tfont-family: ${el.face};\r\n`;
       }
@@ -23,7 +25,9 @@ class VTTWriter extends SubtitleWriter {
     this.styleList.forEach((el, i) => {
       buf += 'STYLE\r\n';
       buf += `::cue(.style${i}) {\r\n`;
-      buf += `\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`;
+      if (el.color) {
+        buf += `\tcolor: ${el.color.length === 6 ? `#${el.color}` : el.color};\r\n`;
+      }
       if (el.face) {
         buf += `\tfont-family: ${el.face};\r\n`;
       }
