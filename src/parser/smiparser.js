@@ -41,7 +41,7 @@ const smiParser = (encoded) => {
           styleList.push(style);
         }
         cue.text += `<c.style${styleNum}>`;
-      } else if (!name.match(/sami|p|body|head|title|style/)) {
+      } else if (!name.match(/sami|p|body|head|title|style|--/)) {
         cue.text += `<${name}>`;
       }
     },
@@ -53,7 +53,7 @@ const smiParser = (encoded) => {
     onclosetag: (tagname) => {
       if (tagname === 'font') {
         cue.text += '</c>';
-      } else if (!tagname.match(/sami|p|body|head|title|style|br|sync/)) {
+      } else if (!tagname.match(/sami|p|body|head|title|style|br|sync|--/)) {
         cue.text += `</${tagname}>`;
       }
     },
