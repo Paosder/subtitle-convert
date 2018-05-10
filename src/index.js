@@ -166,7 +166,7 @@ class SubtitleConverter {
             .end
             .setUTCSeconds(this.parsed.cueList[i].end.getUTCSeconds() + sec);
           if (milli !== undefined) {
-            resize === undefined || this.parsed
+            resize !== undefined || this.parsed
               .cueList[i]
               .start
               .setUTCMilliseconds(this.parsed.cueList[i].start.getUTCMilliseconds() + milli);
