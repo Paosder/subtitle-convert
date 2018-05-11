@@ -6,7 +6,6 @@
   "scripts": {
     "build": "babel ./src/ -d ./lib/ && BROWSER=true rollup -c > ./lib/browser.js",
     "prepare": "npm run build",
-    "start": "node ./build/index.js",
     "dev": "nodemon --watch src --watch test/dev.js --exec 'npm run test-dev'",
     "test-dev": "npm run-script build && node ./test/dev.js",
     "test": "npm run-script build && node ./test/"

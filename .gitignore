@@ -4,6 +4,7 @@
 *.ass
 *.vtt
 *.DS_Store
+yarn-error.log
 
 todo/
 node_modules/
