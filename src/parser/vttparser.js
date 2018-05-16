@@ -24,7 +24,7 @@ const vttParser = (encoded) => {
         }
       });
       styleList.push(style);
-    } else if (!el.match(/^WEBVTT/)) {
+    } else if (!el.match(/^WEBVTT|^REGION/)) {
       const data = el.split(/\r\n/);
       if (data.length === 3) {
         const cue = Cue();
