@@ -5,7 +5,6 @@
   "main": "./lib/",
   "scripts": {
     "build": "babel ./src/ -d ./lib/ && BROWSER=true rollup -c > ./lib/browser.js",
-    "prepare": "npm run build",
     "dev": "nodemon --watch src --watch test/dev.js --exec 'npm run test-dev'",
     "test-dev": "npm run-script build && node ./test/dev.js",
     "test": "npm run-script build && node ./test/"
@@ -43,10 +42,10 @@
     "rollup-plugin-replace": "^2.0.0"
   },
   "dependencies": {
-    "detect-character-encoding": "^0.5.1",
-    "htmlparser2": "^3.9.2",
-    "iconv": "^2.3.0",
-    "lodash": "^4.17.10",
-    "text-encoding": "^0.6.4"
+    "detect-character-encoding": "^0.8.0",
+    "htmlparser2": "^4.1.0",
+    "iconv": "^3.0.0",
+    "lodash": "^4.17.15",
+    "text-encoding": "^0.7.0"
   }
 }
