@@ -16,6 +16,7 @@
     "subtitle",
     "convert"
   ],
+  "files": ["lib"],
   "browser": {
     "./lib/index.js": "./lib/browser.js"
   },
