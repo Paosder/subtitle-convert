@@ -5,7 +5,7 @@
   "main": "./lib/",
   "scripts": {
     "build": "babel ./src/ -d ./lib/ && BROWSER=true rollup -c > ./lib/browser.js",
-    "dev": "nodemon --watch src --watch test/dev.js --exec 'npm run test-dev'",
+    "dev": "webpack --watch",
     "test-dev": "npm run-script build && node ./test/dev.js",
     "test": "npm run-script build && node ./test/"
   },
@@ -16,7 +16,9 @@
     "subtitle",
     "convert"
   ],
-  "files": ["lib"],
+  "files": [
+    "lib"
+  ],
   "browser": {
     "./lib/index.js": "./lib/browser.js"
   },
@@ -32,11 +34,14 @@
     "colors": "^1.4.0",
     "eslint": "^7.0.0",
     "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-loader": "^4.0.2",
     "eslint-plugin-import": "^2.20.2",
     "invariant": "^2.2.4",
+    "jest": "^26.0.1",
     "ts-loader": "^7.0.4",
     "typescript": "^3.9.2",
-    "webpack": "^4.43.0"
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "dependencies": {
     "detect-character-encoding": "^0.8.0",

@@ -24,6 +24,7 @@ class SubtitleConverter {
       this.load(...args);
     }
   }
+
   load(filename, ext, encode, targetencode = 'UTF-8') {
     try {
       if (!process.browser) {
@@ -56,6 +57,7 @@ class SubtitleConverter {
       return false;
     }
   }
+
   parse(object) {
     if (object !== undefined) {
       if (typeof object === 'string') {
@@ -66,7 +68,7 @@ class SubtitleConverter {
           this.parsed = that.parsed;
           this.loaded = that.loaded;
           this.parsed.cueList = this.parsed.cueList.map((el) => {
-            const newel = Object.assign({}, el);
+            const newel = { ...el };
             newel.start = new Date(el.start);
             newel.end = new Date(el.end);
             return newel;
@@ -94,6 +96,7 @@ class SubtitleConverter {
     }
     return true;
   }
+
   convert(type, target) {
     let res = false;
     if (!this.parsed && !this.parse()) {
@@ -125,6 +128,7 @@ class SubtitleConverter {
     }
     return res;
   }
+
   delay(time, index, end, resize) {
     if (!this.parsed) {
       console.log(`
@@ -157,19 +161,19 @@ class SubtitleConverter {
       }
       if (cueIndexEnd < this.parsed.cueList.length) {
         for (let i = cueIndex; i <= cueIndexEnd; i += 1) {
-          resize !== undefined || this.parsed
-            .cueList[i]
-            .start
-            .setUTCSeconds(this.parsed.cueList[i].start.getUTCSeconds() + sec);
+          if (resize) {
+            this.parsed.cueList[i].start
+              .setUTCSeconds(this.parsed.cueList[i].start.getUTCSeconds() + sec);
+          }
           this.parsed
             .cueList[i]
             .end
             .setUTCSeconds(this.parsed.cueList[i].end.getUTCSeconds() + sec);
           if (milli !== undefined) {
-            resize !== undefined || this.parsed
-              .cueList[i]
-              .start
-              .setUTCMilliseconds(this.parsed.cueList[i].start.getUTCMilliseconds() + milli);
+            if (resize) {
+              this.parsed.cueList[i].start
+                .setUTCMilliseconds(this.parsed.cueList[i].start.getUTCMilliseconds() + milli);
+            }
             this.parsed
               .cueList[i]
               .end
@@ -183,9 +187,11 @@ class SubtitleConverter {
     }
     return true;
   }
+
   resize(time, index, end) {
     return this.delay(time, index, end, true);
   }
+
   stringify() {
     const that = {
       originext: this.originext,
@@ -195,6 +201,7 @@ class SubtitleConverter {
     };
     return JSON.stringify(that);
   }
+
   apply(cueList) {
     if (typeof cueList === 'object') {
       /* https://developer.mozilla.org/en-US/docs/Web/API/TextTrack,

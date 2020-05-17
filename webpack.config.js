@@ -40,7 +40,7 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
   },
   externals: [
-    // 'utf-8-validate', 'bufferutil',
+    'iconv',
   ],
   node: {
     __dirname: false,
